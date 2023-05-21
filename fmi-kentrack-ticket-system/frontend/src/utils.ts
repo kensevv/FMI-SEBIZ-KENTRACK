@@ -1,3 +1,5 @@
+import {Dialog} from "quasar";
+
 export const dateTimeToGermanLocaleString = (date) => {
     if (!date) return ''
 
@@ -16,3 +18,42 @@ export const dateTimeToGermanLocaleString = (date) => {
         second: '2-digit'
     })
 }
+
+export const promiseDialog = <T>(dialogComponent, props) => new Promise<T>((resolve) => {
+    Dialog.create({
+        component: dialogComponent,
+        componentProps: props,
+        cancel: true,
+        ok: {
+            color: 'primary'
+        },
+        persistent: true
+    })
+        .onOk((response) => resolve(response))
+        .onCancel(() => {
+        })
+});
+
+
+export const commentPromiseDialog = (): Promise<string> => new Promise<string>((resolve) => {
+    Dialog.create({
+        title: "Add new Comment",
+        message: "Enter a text for your new comment!",
+        prompt: {
+            model: '',
+            isValid: val => val.length > 2,
+            type: 'text'
+        },
+        cancel: {
+            label: "Cancel",
+            color: 'negative'
+        },
+        ok: {
+            color: 'primary'
+        },
+        persistent: true,
+    })
+        .onOk((comment) => resolve(comment))
+        .onCancel(() => {
+        })
+});

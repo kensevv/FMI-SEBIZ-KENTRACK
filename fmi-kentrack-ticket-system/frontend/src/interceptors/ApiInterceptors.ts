@@ -12,17 +12,14 @@ export const setupApiInterceptorsTo = (axiosInstance: AxiosInstance, quasar: QVu
     return axiosInstance;
 };
 
-const excludedUrlsFromNotifications = ['/get-latest-rvm-change-times',]
-
 const onRequest = (quasar: QVueGlobals) => (config: AxiosRequestConfig): AxiosRequestConfig => {
-    if (config.method != 'get' && config.url && !excludedUrlsFromNotifications.includes(config.url)) {
+    if (config.method != 'get' && config.url) {
         if (!notificationQueue.get(config.url)) {
             notificationQueue.set(config.url, new Queue<Function>())
         }
         notificationQueue.get(config.url)?.push(quasar.notify({
             progress: true,
             type: 'ongoing',
-            position: 'top-right',
             message: config['notificationMessages']?.progressMessage ?? "Please wait...",
         }))
     }
@@ -45,7 +42,7 @@ const onResponseError = (quasar: QVueGlobals) => (error: AxiosError): Promise<Ax
     return onErrorAction(error, quasar)
 };
 
-const onErrorAction = (error: AxiosError, quasar: QVueGlobals) => {
+const onErrorAction = async (error: AxiosError, quasar: QVueGlobals) => {
     if (error.config.url && notificationQueue.get(error.config.url) && notificationQueue.get(error.config.url)?.isNotEmpty()) {
         // @ts-ignore
         notificationQueue.get(error.config.url).pop()(failedNotification(error))
@@ -55,9 +52,24 @@ const onErrorAction = (error: AxiosError, quasar: QVueGlobals) => {
     } else if (error.response?.status == 404) {
         router.push("/404");
     } else {
+        const data = error.response?.data
+        let messageHtml;
+        if (
+            typeof data === 'object' &&
+            !Array.isArray(data) &&
+            data !== null && !(data instanceof Blob)
+        ) {
+            messageHtml = constructMessageHtml(data?.exception, data?.message, data?.trace, data.timestamp, data?.path,)
+        } else if (data instanceof Blob) {
+            const parsedBlob = JSON.parse(await data.text())
+            messageHtml = constructMessageHtml(parsedBlob?.exception, parsedBlob?.message, parsedBlob?.trace, parsedBlob.timestamp, parsedBlob?.path,)
+        } else {
+            messageHtml = JSON.stringify(error.response)
+        }
         quasar.dialog({
-            title: error.response?.statusText ?? "Something went wrong",
-            message: JSON.stringify(error.response),
+            html: true,
+            title: ` ${error.response?.statusText ?? "Something went wrong!"} (${error.response?.status})`,
+            message: messageHtml,
             persistent: true,
             position: "right",
             ok: {
@@ -85,3 +97,13 @@ const failedNotification = (error: AxiosError) => ({
     timeout: 1000,
     message: error.config['notificationMessages']?.errorMessage ?? "Operation Failed"
 });
+
+const constructMessageHtml = (exceptionTitle: string, message: string, trace: string, timestamp: Date, path: string): string =>
+    `<b><u>Message:</u></b><br>${message && message != '' ? message : "Something went wrong! See stack trace for more information"}<br>
+         <b><u>Path:</u></b><br>${path}<br>
+         <b><u>Timestamp:</u></b><br>${timestamp}<br><br>
+         <b><u>Exception:</u></b>: ${exceptionTitle}<br>
+         <details>
+            <summary><b><u>Click here to see stack Trace:</u></b></summary>
+            <p>${trace}</p>
+         </details>`

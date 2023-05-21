@@ -7,25 +7,21 @@
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md" @submit="submit">
-          <q-input v-model="issueItem.id"
-                   dense
-                   filled
-                   label="ID"/>
-          <q-input v-model="issueItem.title"
+          <q-input v-model="boardItem.title"
                    dense
                    filled
                    label="Title"/>
-          <q-select v-model="issueItem.owner"
-                    :options="users"
+          <q-select v-model="boardItem.owner"
+                    :options="allUsers"
                     filled
                     label="Owner"
                     option-label="firstName"
           />
 
           <q-select
-              v-model="issueItem.participants"
+              v-model="boardItem.participants"
               :option-label="user => `${user.firstName} ${user.lastName}`"
-              :options="users"
+              :options="allUsers"
               class="q-banner--top-padding"
               dense
               filled
@@ -34,12 +30,12 @@
               stack-label
               use-chips
           />
-          <input-date-picker v-model="issueItem.createdDate" label="Created"/>
-          <input-date-picker v-model="issueItem.updatedDate" label="Updated"/>
+          <input-date-picker v-model="boardItem.createdDate" label="Created" read-only/>
+          <input-date-picker v-model="boardItem.updatedDate" label="Updated" read-only/>
 
           <q-card-actions align="right">
-            <q-btn label="Submit" type="update"/>
-            <q-btn class="q-ml-sm" flat label="Cancel" @click="onDialogCancel"/>
+            <q-btn label="Submit" type="update" color="primary"/>
+            <q-btn class="q-ml-sm" flat label="Cancel" color="negative" @click="onDialogCancel"/>
           </q-card-actions>
         </q-form>
       </q-card-section>
@@ -50,9 +46,9 @@
 <script lang="ts" setup>
 import {useDialogPluginComponent} from 'quasar'
 import {$ref} from "vue/macros";
-import {users} from "../model/mocked-date";
 import {Board} from "../model/Board";
 import InputDatePicker from "../components/input-date-picker.vue";
+import {allUsers} from "../model/constants";
 
 const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
 const props = defineProps<{
@@ -61,9 +57,9 @@ const props = defineProps<{
 
 defineEmits([...useDialogPluginComponent.emits])
 
-const issueItem = $ref<Board>(props.item)
+const boardItem = $ref<Board>(props.item)
 const submit = async () => {
-  onDialogOK(issueItem)
+  onDialogOK(boardItem)
 }
 </script>
 <style scoped>

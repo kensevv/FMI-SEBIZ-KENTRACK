@@ -3,6 +3,7 @@
            :model-value="formatToGerman(modelValue)"
            dense
            fill-mask
+           :readonly="readOnly"
            filled
            mask="##.##.####"
            @update:model-value="updateModelValue($event)">
@@ -12,6 +13,7 @@
                        transition-hide="scale"
                        transition-show="scale">
           <q-date :model-value="formatToGerman(modelValue)"
+                  :readonly="readOnly"
                   mask="DD.MM.YYYY"
                   @update:model-value="updateModelValue($event)">
             <div class="row items-center justify-end">
@@ -25,11 +27,11 @@
 </template>
 <script lang="ts" setup>
 import {date} from "quasar";
-import {useI18n} from "vue-i18n";
 
 const props = defineProps<{
   modelValue: string | null
   label: string
+  readOnly?: boolean
 }>();
 
 const emits = defineEmits<{

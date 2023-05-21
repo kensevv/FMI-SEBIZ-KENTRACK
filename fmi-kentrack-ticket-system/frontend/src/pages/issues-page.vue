@@ -4,7 +4,20 @@
       <div class="col-1"></div>
       <div class="col">
 
-        <q-table :columns="columns" :rows="tickets" :pagination="{rowsPerPage: 0}" hide-pagination virtual-scroll>
+        <q-table :columns="columns"
+                 :filter="filter"
+                 title="All issues"
+                 :pagination="{rowsPerPage: 0}"
+                 :rows="allTickets"
+                 hide-pagination
+                 virtual-scroll>
+          <template v-slot:top-right>
+            <q-input v-model="filter" clearable debounce="300" dense placeholder="Search">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </template>
           <template v-slot:body-cell-edit="props">
             <q-td>
               <q-btn color="primary" flat
@@ -36,14 +49,15 @@
   </q-page>
 </template>
 
-<script setup lang="ts">
-import {tickets} from "../model/mocked-date";
-
+<script lang="ts" setup>
 import {Ticket} from "../model/Ticket";
 import {dateTimeToGermanLocaleString} from "../utils";
 import {useRouter} from "vue-router";
 import EditIssueDialog from "../dialogs/edit-issue-dialog.vue";
 import {useQuasar} from "quasar";
+import {allTickets} from "../model/constants";
+import {deleteTicketById, updateTicket} from "../services/request-service";
+import {$ref} from "vue/macros";
 
 const quasar = useQuasar()
 const router = useRouter()
@@ -55,12 +69,22 @@ const editIssue = (issue: Ticket) => {
       'item': {...issue},
     }
   }).onOk(async (editedItem: Ticket) => {
-    tickets.value = tickets.value.map(ticket => {
-      if (ticket.id == editedItem.id) return editedItem
-      else return ticket
+    await updateTicket(editedItem).then(r => {
+      allTickets.value = allTickets.value.map(ticket => {
+        if (ticket.id == editedItem.id) return editedItem
+        else return ticket
+      })
     })
   })
 }
+
+const onDeleteClick = async (issue: Ticket) => {
+  await deleteTicketById(issue.id).then(r => {
+    allTickets.value = allTickets.value.filter(ticket => ticket.id != issue.id)
+  })
+}
+
+const filter = $ref('')
 
 const columns = [
   {
@@ -90,7 +114,7 @@ const columns = [
   }, {
     label: 'Status',
     name: 'status',
-    field: (row: Ticket) => row.section.title,
+    field: (row: Ticket) => row.section.sectionName,
     sortable: true,
     align: 'left'
   }, {

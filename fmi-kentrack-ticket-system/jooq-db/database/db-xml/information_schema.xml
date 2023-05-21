@@ -180,7 +180,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>COMMENT</table_name>
-            <column_name>AUTHOR</column_name>
+            <column_name>AUTHOR_USERNAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -453,7 +453,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>SECTION</table_name>
-            <column_name>TITLE</column_name>
+            <column_name>SECTION_NAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -505,7 +505,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>TICKET</table_name>
-            <column_name>OWNER</column_name>
+            <column_name>OWNER_USERNAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -518,7 +518,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>TICKET</table_name>
-            <column_name>ASSIGNEE</column_name>
+            <column_name>ASSIGNEE_USERNAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -596,7 +596,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>USER</table_name>
-            <column_name>EMAIL</column_name>
+            <column_name>FIRST_NAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -609,7 +609,7 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>USER</table_name>
-            <column_name>FIRST_NAME</column_name>
+            <column_name>LAST_NAME</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
@@ -622,13 +622,53 @@
             <table_catalog></table_catalog>
             <table_schema>KENTRACK</table_schema>
             <table_name>USER</table_name>
-            <column_name>LAST_NAME</column_name>
+            <column_name>EMAIL</column_name>
             <data_type>varchar</data_type>
             <character_maximum_length>0</character_maximum_length>
             <numeric_precision>0</numeric_precision>
             <numeric_scale>0</numeric_scale>
             <ordinal_position>4</ordinal_position>
             <is_nullable>true</is_nullable>
+            <comment></comment>
+        </column>
+        <column>
+            <table_catalog></table_catalog>
+            <table_schema>KENTRACK</table_schema>
+            <table_name>USER</table_name>
+            <column_name>ROLES</column_name>
+            <data_type>varchar</data_type>
+            <character_maximum_length>0</character_maximum_length>
+            <numeric_precision>0</numeric_precision>
+            <numeric_scale>0</numeric_scale>
+            <ordinal_position>5</ordinal_position>
+            <is_nullable>true</is_nullable>
+            <comment></comment>
+        </column>
+        <column>
+            <table_catalog></table_catalog>
+            <table_schema>KENTRACK</table_schema>
+            <table_name>USER</table_name>
+            <column_name>PASSWORD</column_name>
+            <data_type>varchar</data_type>
+            <character_maximum_length>0</character_maximum_length>
+            <numeric_precision>0</numeric_precision>
+            <numeric_scale>0</numeric_scale>
+            <ordinal_position>6</ordinal_position>
+            <is_nullable>true</is_nullable>
+            <comment></comment>
+        </column>
+        <column>
+            <table_catalog></table_catalog>
+            <table_schema>KENTRACK</table_schema>
+            <table_name>USER</table_name>
+            <column_name>DELETED</column_name>
+            <data_type>char</data_type>
+            <character_maximum_length>1</character_maximum_length>
+            <numeric_precision>0</numeric_precision>
+            <numeric_scale>0</numeric_scale>
+            <ordinal_position>7</ordinal_position>
+            <is_nullable>false</is_nullable>
+            <column_default>'''N''        '</column_default>
             <comment></comment>
         </column>
     </columns>
@@ -726,7 +766,7 @@
             <table_name>DATABASECHANGELOGLOCK</table_name>
         </key_column_usage>
         <key_column_usage>
-            <column_name>TITLE</column_name>
+            <column_name>SECTION_NAME</column_name>
             <constraint_catalog></constraint_catalog>
             <constraint_schema>KENTRACK</constraint_schema>
             <constraint_name>PK_SECTION</constraint_name>

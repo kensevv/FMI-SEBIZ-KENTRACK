@@ -7,10 +7,6 @@
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md" @submit="submit">
-          <q-input v-model="issueItem.id"
-                   dense
-                   filled
-                   label="ID"/>
           <q-input v-model="issueItem.title"
                    dense
                    filled
@@ -93,13 +89,13 @@
           />
 
           <q-select v-model="issueItem.owner"
-                    :options="users"
+                    :options="allUsers"
                     filled
                     label="Owner"
                     option-label="firstName"
           />
           <q-select v-model="issueItem.assignee"
-                    :options="users"
+                    :options="allUsers"
                     filled
                     label="Assignee"
                     option-label="firstName"
@@ -109,21 +105,21 @@
                     :options="sections"
                     filled
                     label="Section"
-                    option-label="title"
+                    option-label="sectionName"
           />
 
           <q-select v-model="issueItem.board"
-                    :options="boards"
+                    :options="allBoards"
                     filled
                     label="Board"
                     option-label="title"
           />
-          <input-date-picker v-model="issueItem.createdDate" label="Created"/>
-          <input-date-picker v-model="issueItem.updatedDate" label="Updated"/>
+          <input-date-picker read-only v-model="issueItem.createdDate" label="Created"/>
+          <input-date-picker read-only v-model="issueItem.updatedDate" label="Updated"/>
 
           <q-card-actions align="right">
-            <q-btn label="Submit" type="update"/>
-            <q-btn class="q-ml-sm" flat label="Cancel" @click="onDialogCancel"/>
+            <q-btn label="Submit" color="primary" type="update"/>
+            <q-btn class="q-ml-sm" flat label="Cancel" color="negative" @click="onDialogCancel"/>
           </q-card-actions>
         </q-form>
       </q-card-section>
@@ -135,8 +131,8 @@
 import {useDialogPluginComponent} from 'quasar'
 import {$ref} from "vue/macros";
 import {Ticket} from "../model/Ticket";
-import {boards, sections, users} from "../model/mocked-date";
 import InputDatePicker from "../components/input-date-picker.vue";
+import {allBoards, allUsers, sections} from "../model/constants";
 
 const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
 const props = defineProps<{

@@ -1,9 +1,9 @@
-import {User} from "./User";
+import {UserView} from "./UserView";
 
 export interface Comment {
     id: number,
     content: string,
-    author: User,
+    author: UserView,
     createdDate: Date,
     updatedDate: Date,
 }

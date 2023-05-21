@@ -3,25 +3,23 @@
     <q-card class="fixed-center q-pa-md" style="width: 25rem; ">
       <q-form @submit="onLoginClick">
         <q-card-section class="q-col-gutter-lg">
-          <img width="350" src="/src/assets/logo.png">
+          <img src="/src/assets/logo.png" width="350">
           <q-input v-model="username"
                    :rules="[ val => val !== null && val !== '' || 'required']"
-                   :reactive-rules="true"
+                   class="full-width"
                    dense
                    filled
                    label="username"
                    standout
-                   type="text"
-                   class="full-width"/>
+                   type="text"/>
           <q-input v-model="password"
                    :rules="[ val => val !== null && val !== '' || 'required']"
-                   :reactive-rules="true"
+                   class="full-width"
                    dense
                    filled
                    label="password"
                    standout
-                   type="password"
-                   class="full-width"/>
+                   type="password"/>
         </q-card-section>
         <q-card-actions>
           <q-btn :loading="loading" class="full-width" color="grey" label="login" type="submit">
@@ -34,10 +32,11 @@
 </template>
 <script lang="ts" setup>
 
-import {login, login1, storeUser} from "../services/UserService";
+import {login, storeUser} from "../services/UserService";
 import {useRouter} from "vue-router";
 import {useQuasar} from "quasar";
 import {$ref} from "vue/macros";
+import {AuthenticationResponse, Error, Success} from "../model/AuthenticationResponse";
 
 
 const router = useRouter()
@@ -51,14 +50,18 @@ let failMessage = $ref('')
 
 const onLoginClick = async () => {
   loading = true
-  const user = await login1(username, password)
-      if(user) {
-        storeUser(user)
+  await login(username, password)
+      .then(r => {
+        const authResponse: AuthenticationResponse = <Success>r.data
+        storeUser(authResponse.user)
         loading = false
         router.push({path: '/'})
-      } else {
+      }).catch(e => {
+        const authResponse: AuthenticationResponse = <Error>e.response.data
         loading = false
-      }
+        failMessage = `${e.response.statusText}: ${authResponse.result}`
+        Promise.reject("Unauthenticated");
+      })
 }
 
 </script>
@@ -73,4 +76,3 @@ export default defineComponent({
 <style scoped>
 
 </style>
-

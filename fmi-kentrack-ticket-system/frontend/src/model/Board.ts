@@ -1,10 +1,10 @@
-import {User} from "./User";
+import {UserView} from "./UserView";
 
 export interface Board {
     id: number,
     title: string,
-    owner: User,
-    participants: User[],
+    owner: UserView,
+    participants: UserView[],
     createdDate: Date,
     updatedDate: Date
 }

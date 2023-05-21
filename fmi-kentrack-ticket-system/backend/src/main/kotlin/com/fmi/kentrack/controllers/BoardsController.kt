@@ -17,8 +17,8 @@ class BoardsController {
     fun getAllBoards() = boardsService.getAllBoards()
 
     @PostMapping("/update-board")
-    fun updateBoard(board: Board) = boardsService.updateBoard(board)
+    fun updateBoard(@RequestBody board: Board) = boardsService.updateBoard(board)
 
-    @PostMapping("/create-board")
-    fun createBoard(newBoard: Board) = boardsService.createBoard(newBoard)
+    @PostMapping("/create-new-board")
+    fun createBoard(@RequestBody newBoard: Board) = boardsService.createBoard(newBoard)
 }

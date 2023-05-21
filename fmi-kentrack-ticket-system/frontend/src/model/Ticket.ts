@@ -1,14 +1,14 @@
 import {Board} from "./Board";
 import {Comment} from "./Comment";
 import {Section} from "./Section";
-import {User} from "./User";
+import {UserView} from "./UserView";
 
 export interface Ticket {
     id: number,
     title: string,
     description: string,
-    owner: User,
-    assignee: User,
+    owner: UserView,
+    assignee: UserView,
     comments: Comment[],
     section: Section,
     board: Board,

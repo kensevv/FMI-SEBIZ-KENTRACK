@@ -1,3 +1,3 @@
 export interface Section {
-    title: string,
+    sectionName: string,
 }
