@@ -21,4 +21,7 @@ class BoardsController {
 
     @PostMapping("/create-new-board")
     fun createBoard(@RequestBody newBoard: Board) = boardsService.createBoard(newBoard)
+
+    @GetMapping("/get-all-sections")
+    fun getAllSections() = boardsService.getAllSections()
 }

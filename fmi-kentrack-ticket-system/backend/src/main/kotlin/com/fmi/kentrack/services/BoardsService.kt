@@ -3,8 +3,10 @@ package com.fmi.kentrack.services
 import com.fmi.kentrack.jooq.tables.records.BoardRecord
 import com.fmi.kentrack.jooq.tables.records.UserRecord
 import com.fmi.kentrack.jooq.tables.references.BOARD
+import com.fmi.kentrack.jooq.tables.references.SECTION
 import com.fmi.kentrack.jooq.tables.references.USER
 import com.fmi.kentrack.model.Board
+import com.fmi.kentrack.model.Section
 import com.fmi.kentrack.users.UserService
 import com.fmi.kentrack.users.mapToInternalModel
 import kotlinx.serialization.decodeFromString
@@ -71,5 +73,7 @@ class BoardsService : BaseService() {
             participants = userService.getUsersByUsernameList(Json.decodeFromString(boardRecord.participantIds!!))
         )
     }
+
+    fun getAllSections(): List<Section> = db.selectFrom(SECTION).fetchInto(Section::class.java)
 
 }

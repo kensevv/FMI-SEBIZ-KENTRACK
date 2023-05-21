@@ -6,17 +6,40 @@
 
         <q-table :columns="columns"
                  :filter="filter"
-                 title="All issues"
                  :pagination="{rowsPerPage: 0}"
-                 :rows="allTickets"
+                 :rows="filteredTickets"
                  hide-pagination
                  virtual-scroll>
+          <template v-slot:top class="full-width bg-green">
+            <div class="row full-width">
+              <div class="col-1 q-table__title">All issues</div>
+              <div class="col-7 offset-1 row q-gutter-sm">
+                <q-select v-model="boardFilter" :options="allBoards" class="col" dense emit-value label="Board"
+                          map-options
+                          option-label="title"
+                          option-value="id"
+                          options-dense/>
+                <q-select v-model="sectionFilter" :options="sections" class="col" dense emit-value
+                          label="Status"
+                          map-options
+                          option-label="sectionName"
+                          option-value="sectionName"
+                          options-dense/>
+                <q-select v-model="assigneeFilter" :option-label="user => `${user.firstName} ${user.lastName}`" :options="allUsers" class="col" dense emit-value
+                          label="Assignee"
+                          map-options
+                          option-value="username"
+                          options-dense/>
+              </div>
+              <q-input v-model="filter" class="col offset-1" clearable debounce="300" dense placeholder="Search">
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
+            </div>
+          </template>
           <template v-slot:top-right>
-            <q-input v-model="filter" clearable debounce="300" dense placeholder="Search">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+
           </template>
           <template v-slot:body-cell-edit="props">
             <q-td>
@@ -55,13 +78,12 @@ import {dateTimeToGermanLocaleString} from "../utils";
 import {useRouter} from "vue-router";
 import EditIssueDialog from "../dialogs/edit-issue-dialog.vue";
 import {useQuasar} from "quasar";
-import {allTickets} from "../model/constants";
+import {allBoards, allTickets, allUsers, sections} from "../model/constants";
 import {deleteTicketById, updateTicket} from "../services/request-service";
-import {$ref} from "vue/macros";
+import {$computed, $ref} from "vue/macros";
 
 const quasar = useQuasar()
 const router = useRouter()
-
 const editIssue = (issue: Ticket) => {
   quasar.dialog({
     component: EditIssueDialog,
@@ -77,14 +99,28 @@ const editIssue = (issue: Ticket) => {
     })
   })
 }
-
 const onDeleteClick = async (issue: Ticket) => {
   await deleteTicketById(issue.id).then(r => {
     allTickets.value = allTickets.value.filter(ticket => ticket.id != issue.id)
   })
 }
-
 const filter = $ref('')
+const boardFilter = $ref<number | null>(null)
+const assigneeFilter = $ref<string | null>(null)
+const sectionFilter = $ref<string>('')
+const filteredTickets = $computed(() => {
+  let result = allTickets.value
+  if (boardFilter) {
+    result = result.filter(ticket => ticket.board.id == boardFilter)
+  }
+  if (assigneeFilter && assigneeFilter !== '') {
+    result = result.filter(ticket => ticket.assignee.username == assigneeFilter)
+  }
+  if (sectionFilter && sectionFilter !== '') {
+    result = result.filter(ticket => ticket.section.sectionName == sectionFilter)
+  }
+  return result
+})
 
 const columns = [
   {

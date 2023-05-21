@@ -3,6 +3,7 @@ import {NotificationMessages} from "../model/NotificationMessages";
 import {api} from "../boot/Axios";
 import {Board} from "../model/Board";
 import {Ticket} from "../model/Ticket";
+import {Section} from "../model/Section";
 
 export const getUserByUsername = async (username: string): Promise<UserView> => await api.get<UserView>(`/user/`, {
     params: {username}
@@ -34,6 +35,8 @@ export const changeCurrentUserPassword = async (currentPassword: string, newPass
             }
         }).then(r => r.data)
 export const getUsers = async (): Promise<UserView[]> => await api.get<UserView[]>(`/user/all`).then(r => r.data)
+
+export const getAllSections = async (): Promise<Section[]> => await api.get<Section[]>(`/get-all-sections`).then(r => r.data)
 
 export const updateUser = async (user: UserView): Promise<Awaited<any> | UserView[]> =>
     await api.post<UserView>(`/user/update`, JSON.stringify(user), {

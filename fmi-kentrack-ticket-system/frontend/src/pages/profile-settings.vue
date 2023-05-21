@@ -23,7 +23,7 @@
                   </q-avatar>
                 </q-item-section>
                 <div class="text-h4" style="color: #0e6be7">{{ userDetails.username }}</div>
-                <div class="text-h4" style="color: #0e6be7"> {{ userDetails.roles }}</div>
+                <div class="text-h7"> ({{ userDetails.roles.join(' ,') }})</div>
               </q-item>
               <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <q-item-section>
