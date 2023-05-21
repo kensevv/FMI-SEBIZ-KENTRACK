@@ -40,6 +40,15 @@ class UserService : BaseService() {
         }?.mapToInternalModel()
     }
 
+    fun updateMyProfile(user: User, currentUserUsername: String): User? = db.transactionResult { transaction ->
+        require(user.username.equals(currentUserUsername, true)) { "You can edit your profile only!" }
+        getUserRecordByUsername(user.username, transaction.dsl())?.apply {
+            from(user)
+            roles = Json.encodeToString(user.roles)
+            update()
+        }?.mapToInternalModel()
+    }
+
     @PreAuthorize("hasAuthority('MAINTAINER')")
     suspend fun createUser(user: User): User? = db.transactionResult { transaction ->
         kotlin.runCatching {
@@ -67,6 +76,7 @@ class UserService : BaseService() {
             }
             id
         }
+
     fun changePassword(currentPassword: String, newPassword: String, currentUserUsername: String): Boolean {
         val dbUser = getUserRecordByUsername(currentUserUsername)
         return passwordEncoder.matches(currentPassword, dbUser?.password) &&
@@ -76,8 +86,10 @@ class UserService : BaseService() {
                     it > 0
                 } ?: false
     }
+
     fun getUsersByUsernameList(usernames: List<String>) = usernames.map { getUserByUsername(it)!! }
 }
+
 fun UserRecord.mapToInternalModel(): User = User(
     username = username!!,
     email = email,

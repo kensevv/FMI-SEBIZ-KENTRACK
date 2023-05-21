@@ -49,6 +49,17 @@ export const updateUser = async (user: UserView): Promise<Awaited<any> | UserVie
         },
     }).then(r => r.data)
 
+export const updateMyProfile = async (user: UserView): Promise<Awaited<any> | UserView[]> =>
+    await api.post<UserView>(`/user/update-my-profile`, JSON.stringify(user), {
+        headers: {'Content-Type': 'application/json'},
+        // @ts-ignore
+        notificationMessages: <NotificationMessages>{
+            progressMessage: "Updating your profile...",
+            successMessage: "Successfully updated your profile.",
+            errorMessage: "Something went wrong while updating your profile."
+        },
+    }).then(r => r.data)
+
 export const deleteUser = async (username: string): Promise<string> => await api.delete<string>(`/user/delete`, {
     params: {username}
 }).then(r => r.data)

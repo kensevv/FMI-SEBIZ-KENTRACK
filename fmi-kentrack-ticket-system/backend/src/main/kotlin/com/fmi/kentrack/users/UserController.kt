@@ -41,6 +41,10 @@ class UserController {
     @PostMapping("/update")
     suspend fun updateUser(@RequestBody user: User) = userService.updateUser(user)
 
+    @PostMapping("/update-my-profile")
+    fun updateMyProfile(@RequestBody user: User, principal: Principal): User? {
+        return userService.updateMyProfile(user, principal.name)
+    }
     @PreAuthorize("hasAuthority('MAINTAINER')")
     @DeleteMapping("/delete")
     suspend fun deleteUser(@RequestParam username: String) = userService.deleteUser(username)

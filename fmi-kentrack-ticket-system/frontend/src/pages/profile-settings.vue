@@ -7,7 +7,7 @@
             <div class="text-h6">Edit Profile
               <q-btn color="primary" flat
                      icon="save" round type="a"
-                     @click="changePassword()">
+                     @click="updateUserInfo()">
                 <q-tooltip>
                   Update user info
                 </q-tooltip>
@@ -101,8 +101,8 @@
 <script lang="ts" setup>
 
 import {$ref} from "vue/macros";
-import {getCurrentUser} from "../services/UserService";
-import {changeCurrentUserPassword} from "../services/request-service";
+import {getCurrentUser, updateUserInLocalStorage} from "../services/UserService";
+import {changeCurrentUserPassword, updateMyProfile} from "../services/request-service";
 
 const userDetails = $ref(getCurrentUser())
 const currentPassword = $ref('')
@@ -110,6 +110,11 @@ const newPassword = $ref('')
 const confirmNewPassword = $ref('')
 let passwordStatus = $ref({message: '', color: 'primary'})
 
+const updateUserInfo = async () => {
+  await updateMyProfile(userDetails).then(response => {
+    updateUserInLocalStorage(userDetails)
+  })
+}
 const changePassword = async () => {
   await changeCurrentUserPassword(currentPassword, newPassword).then(response => {
     if (response) {

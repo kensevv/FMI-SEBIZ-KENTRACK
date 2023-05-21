@@ -31,10 +31,10 @@
 
           <q-select
               v-model="user.roles"
-              label="Roles"
               :options="Object.values(Roles)"
               class="q-mb-md"
               dense
+              label="Roles"
               multiple
               stack-label
               use-chips
@@ -64,7 +64,7 @@ import {useRouter} from "vue-router";
 import {useQuasar} from "quasar";
 import {deleteUser, getUserByUsername, updateUser} from "../services/request-service";
 import {UserView} from "../model/UserView";
-import {getCurrentUser} from "../services/UserService";
+import {getCurrentUser, updateUserInLocalStorage} from "../services/UserService";
 import {Roles} from "../model/Roles";
 
 const props = defineProps<{
@@ -79,6 +79,9 @@ const onSaveUser = async () => {
   await updateUser(user).then(response => {
     serverUser = response
     user = {...serverUser}
+    if (getCurrentUser().username == user.username) {
+      updateUserInLocalStorage(user)
+    }
   })
 }
 const currentUserUsername = getCurrentUser().username;
